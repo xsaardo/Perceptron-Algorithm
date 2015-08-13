@@ -1,0 +1,50 @@
+close all; 
+clear;
+%% Generate Training Set
+% trainSet = importdata('iris.txt');
+% trainSet = [trainSet(:,1:3),trainSet(:,5)];
+% trainSet = trainSet';
+% hold on
+% view(3)
+% grid on
+% for j = 1:length(trainSet)
+%    if trainSet(end,j) == 1
+%        scatter3(trainSet(1,j),trainSet(2,j),trainSet(3,j),'or');
+%    elseif trainSet(end,j) == -1
+%        scatter3(trainSet(1,j),trainSet(2,j),trainSet(3,j),'xg');
+%    end
+% end
+
+
+%% Generating Training Set from Image
+seagull = imread('seagull.jpg');
+
+%% Perceptron Algorithm
+eta = 0.98;
+
+w = zeros(size(trainSet(1:end-1,1)));
+b = 0;
+k = 0;
+R = max(sqrt(trainSet(1,:).^2 + trainSet(2,:).^2 + trainSet(3,:).^2));
+mistake = 0;
+
+while (mistake == 0)
+    mistake = 1;
+    
+    for i = 1:length(trainSet)
+        if (trainSet(end,i)*(dot(w,trainSet(1:end-1,i)) + b) <= 0)
+            w = w + eta*trainSet(end,i)*trainSet(1:end-1,i);
+            b = b + eta*trainSet(end,i)*R^2;
+            k = k + 1;
+            mistake = 0;
+        end
+    end
+    
+end
+
+x = 0:.1:10;
+[X, Y] = meshgrid(x);
+Z = (-b - w(1)*X - w(2)*Y)/w(3);
+surf(X,Y,Z)
+shading flat
+
